@@ -9,13 +9,16 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Pressable, TextInput, Text } from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import React from 'react';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+    const router = useRouter();
     const [usernameInput, onChangeUsername] = React.useState('');
     const [passwordInput, onChangePassword] = React.useState('');
 
     const printLoginInfo = () => {
         console.log("Username: " + usernameInput + ", \nPassword: " + passwordInput);
+        router.replace('/(tabs)/explore'); // redirect to home page after login
     }
     return (
     <ParallaxScrollView

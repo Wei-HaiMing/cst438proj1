@@ -47,6 +47,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="lock" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="signup"
+        options={{
+          title: 'Sign Up',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.crop.circle.badge.plus" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

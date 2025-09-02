@@ -1,3 +1,9 @@
+/*
+Author: Armando Vega
+Date Last Modified: 9 September 2025
+Summary: Login page for the app. I put comments everywhere since this is my first time
+working with ReactNative. 
+*/
 import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
@@ -11,14 +17,17 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import React from 'react';
 import { useRouter } from 'expo-router';
 
-export default function HomeScreen() {
+export default function LoginScreen() {
     const router = useRouter();
     const [usernameInput, onChangeUsername] = React.useState('');
     const [passwordInput, onChangePassword] = React.useState('');
 
     const printLoginInfo = () => {
         console.log("Username: " + usernameInput + ", \nPassword: " + passwordInput);
-        router.replace('/(tabs)/explore'); // redirect to home page after login
+        if(usernameInput.trim().length !== 0 && passwordInput.trim().length !== 0)
+        {
+          router.replace('/(tabs)/explore'); // redirect to home page after login
+        }
     }
     return (
     <ParallaxScrollView
@@ -30,13 +39,13 @@ export default function HomeScreen() {
         />
       }>
 
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Login Page</ThemedText>
-        <HelloWave />
-      </ThemedView>
-
       <SafeAreaProvider> {/* code referenced from https://reactnative.dev/docs/textinput */}
         <SafeAreaView>   {/* https://reactnative.dev/docs/next/safeareaview */}
+            <ThemedView style={styles.titleContainer}>
+              <ThemedText type="title">Login Page</ThemedText>
+              <HelloWave />
+            </ThemedView>
+
             <TextInput // enter username box
                 style = {styles.input}            // the style of the text box as defined at the bottom of the file
                 onChangeText = {onChangeUsername} // identifies the function to change the text
@@ -66,7 +75,6 @@ export default function HomeScreen() {
             </Pressable>
         </SafeAreaView>
       </SafeAreaProvider>
-
       
     </ParallaxScrollView>
   );

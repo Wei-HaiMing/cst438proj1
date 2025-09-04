@@ -1,36 +1,76 @@
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Platform } from "react-native";
+// import { Button, Pressable } from "react-native-gesture-handler";
 import { useRouter } from 'expo-router';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import { View } from 'react-native';
+import { Pressable, TextInput, Text } from 'react-native-gesture-handler';
 
-export default function Home() {
-    const router = useRouter();
-
-    return (
-        <SafeAreaView style={styles.container}>
+export default function Index() {
+  const router = useRouter();
+  
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text>Edit app/index.tsx to edit this screen.</Text>
+      
             <View 
-            style={{ backgroundColor: 'white' }}>
+              style={{ backgroundColor: 'white' }}>
 
-            <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
-                <Text>Welcome to Trivia!</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
+                  <Text>Welcome to Trivia!</Text>
+              </TouchableOpacity>
             </View>
-        </SafeAreaView>
-    );
+    <Pressable
+            onPress={() => router.push('/login')}
+            style={({pressed}) => [
+            {
+                backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+                borderColor: pressed ? 'green' : 'blue',
+                borderWidth: 1,
+            },
+            styles.wrapperCustom,
+          ]}>
+            {({pressed}) => (
+                <Text style={styles.text}>{pressed ? 'Pressed!' : 'Press Me'}</Text>
+            )}
+        </Pressable>
+    </SafeAreaView>
+    
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f5a7a7ff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    content: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    title: {
-        textAlign: 'center',
-    },
+  // titleContainer: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   gap: 8,
+  // },
+  // stepContainer: {
+  //   gap: 8,
+  //   marginBottom: 8,
+  // },
+  // reactLogo: {
+  //   height: 178,
+  //   width: 290,
+  //   bottom: 0,
+  //   left: 0,
+  //   position: 'absolute',
+  // },
+  // input: {
+  //   height: 40,
+  //   margin: 12,
+  //   borderWidth: 1,
+  //   padding: 10,
+  // },
+  wrapperCustom: {
+    borderRadius: 8,
+    padding: 6,
+  },
+  text: {
+    fontSize: 16,
+  },
 });

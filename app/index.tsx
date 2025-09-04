@@ -4,11 +4,13 @@ import { useRouter } from 'expo-router';
 // import { View } from 'react-native';
 import { Pressable, TextInput, Text } from 'react-native-gesture-handler';
 import { Platform, StyleSheet } from 'react-native';
+import App from '../App';
 
 export default function Index() {
   const router = useRouter();
   
   return (
+    
     <View
       style={{
         flex: 1,
@@ -16,6 +18,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+      <App />
       <Text>Edit app/index.tsx to edit this screen.</Text>
     <Pressable
             onPress={() => router.push('/login')}

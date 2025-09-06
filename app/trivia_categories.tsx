@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { askChatGPT } from '../lib/chatgpt';
 
 export default function TriviaCategoriesScreen() {
@@ -11,6 +11,7 @@ export default function TriviaCategoriesScreen() {
                             is just a place holder so DO NOT include parenthesis '()' in your response`;
     const [categories, setCategories] = useState<{ name: string; description: string}[]>([]);
     const [loading, setLoading] = useState(false);
+    const [fadeAnim] = useState(new Animated.Value(0));
 
     const handleGetCategories = async () => {
         setLoading(true);
@@ -22,33 +23,61 @@ export default function TriviaCategoriesScreen() {
         
         setCategories(categories);
         setLoading(false);
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <View 
-            style={{ backgroundColor: 'white' }}>
-
-            <Text>Select a trivia category:</Text>
-            <TouchableOpacity onPress={handleGetCategories} disabled={loading}>
-                <Text>{loading ? 'Loading...' : 'Get Categories'}</Text>
-            </TouchableOpacity>
-            {categories.length > 0 && (
-                <View>
-                    <Text>Categories:</Text>
-                    {categories.map((cat, idx) => (
-                        <TouchableOpacity key={idx} style={{ marginVertical: 5}}>
-                            <Text>{cat.name}</Text>
-                        </TouchableOpacity>
-                    ))}
+            {!categories.length ?(
+                <View 
+                style={ styles.card}>
+                    <TouchableOpacity onPress={handleGetCategories} disabled={loading}>
+                        <Text style={styles.text}>{loading ? 'Loading...' : 'Get Categories'}</Text>
+                    </TouchableOpacity>
                 </View>
+            ) : (
+            <Animated.View
+                style={{ backgroundColor: 'white', margin: 8, borderRadius: 8, opacity: fadeAnim}}>
+                    <View>
+                        {Array.from({ length: Math.ceil(categories.length / 2)}).map((_, rowIdx) => (
+                            <View key={rowIdx} style={styles.row}>
+                                {categories.slice(rowIdx * 2, rowIdx * 2 + 2).map((cat, idx) => (
+                                    <TouchableOpacity key={idx} style={styles.card}>
+                                        <Text style={styles.text}>{cat.name}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        ))}
+                    </View>
+                </Animated.View>
             )}
-            </View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 8,
+    },
+    card: {
+        //flex: 1,
+        backgroundColor: '#f7c873',
+        padding: 16,
+        marginHorizontal: 8,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    text: {
+        fontWeight: 'bold',
+        color: '#333',
+        alignContent: 'center',
+    },
     container: {
         flex: 1,
         backgroundColor: '#f5a7a7ff',

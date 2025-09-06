@@ -1,161 +1,82 @@
-import { useRouter } from 'expo-router';
-import { View } from 'react-native';
-import { Pressable, TextInput, Text } from 'react-native-gesture-handler';
-import { Platform, StyleSheet } from 'react-native';
-
 import React, { useState } from "react";
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-function App() {
-    const [
-        selectedValue,
-        setSelectedValue,
-    ] = useState("option1");
+export default function TriviaScreen() {
+  const [selected, setSelected] = useState<string | null>(null);
 
-    const handleRadioChange = (
-        value
-    ) => {
-        setSelectedValue(value);
-    };
+  const question = "What is the capital of California?";
+  const answers = ["San Jose", "Los Angeles", "Sacramento", "San Diego"];
 
-    const styles = {
-        container: {
-            display: "flex",
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-        },
-        heading: {
-            color: "green",
-            textAlign: "center",
-        },
-        radioGroup: {
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent:
-                "space-around",
-            marginTop: "20px",
-            borderRadius: "8px",
-            backgroundColor: "white",
-            padding: "30px",
-            boxShadow:
-                "0px 2px 3.84px rgba(0, 0, 0, 0.25)",
-        },
-        radioButton: {
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-        },
-        radioLabel: {
-            marginLeft: "8px",
-            fontSize: "17px",
-            color: "#333",
-        },
-    };
+  const handlePress = (answer: string) => {
+    setSelected(answer);
+  };
 
-    return (
-        <div>
-            <h1 style={styles.heading}>
-                What is the capitol of California?
-            </h1>
-            <div
-                style={styles.container}
-            >
-                <div
-                    style={
-                        styles.radioGroup
-                    }
-                >
-                    <div
-                        style={
-                            styles.radioButton
-                        }
-                    >
-                        <input
-                            type="radio"
-                            id="option1"
-                            value="option1"
-                            checked={
-                                selectedValue ===
-                                "option1"
-                            }
-                            onChange={() =>
-                                handleRadioChange(
-                                    "option1"
-                                )
-                            }
-                        />
-                        <label
-                            htmlFor="option1"
-                            style={
-                                styles.radioLabel
-                            }
-                        >
-                            San Jose
-                        </label>
-                    </div>
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Question */}
+      <Text style={styles.question}>{question}</Text>
 
-                    <div
-                        style={
-                            styles.radioButton
-                        }
-                    >
-                        <input
-                            type="radio"
-                            id="option2"
-                            value="option2"
-                            checked={
-                                selectedValue ===
-                                "option2"
-                            }
-                            onChange={() =>
-                                handleRadioChange(
-                                    "option2"
-                                )
-                            }
-                        />
-                        <label
-                            htmlFor="option2"
-                            style={
-                                styles.radioLabel
-                            }
-                        >
-                            San Diego
-                        </label>
-                    </div>
-
-                    <div
-                        style={
-                            styles.radioButton
-                        }
-                    >
-                        <input
-                            type="radio"
-                            id="option3"
-                            value="option3"
-                            checked={
-                                selectedValue ===
-                                "option3"
-                            }
-                            onChange={() =>
-                                handleRadioChange(
-                                    "option3"
-                                )
-                            }
-                        />
-                        <label
-                            htmlFor="option3"
-                            style={
-                                styles.radioLabel
-                            }
-                        >
-                            San Francisco
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+      {/* Answers in a grid */}
+      <View style={styles.grid}>
+        {answers.map((answer) => (
+          <TouchableOpacity
+            key={answer}
+            style={[
+              styles.answerBox,
+              selected === answer && styles.selectedAnswer,
+            ]}
+            onPress={() => handlePress(answer)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.answerText}>{answer}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </SafeAreaView>
+  );
 }
 
-export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#f2f2f2",
+  },
+  question: {
+    fontSize: 22,
+    fontWeight: "600",
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 20, 
+  },
+  answerBox: {
+    width: 140,
+    height: 140,
+    backgroundColor: "white",
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
+    elevation: 3, 
+    shadowColor: "#000", 
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  selectedAnswer: {
+    borderColor: "green",
+    backgroundColor: "#e6ffe6",
+  },
+  answerText: {
+    fontSize: 16,
+    textAlign: "center",
+    paddingHorizontal: 8,
+  },
+});

@@ -46,7 +46,10 @@ export default function TriviaCategoriesScreen() {
                         {Array.from({ length: Math.ceil(categories.length / 2)}).map((_, rowIdx) => (
                             <View key={rowIdx} style={styles.row}>
                                 {categories.slice(rowIdx * 2, rowIdx * 2 + 2).map((cat, idx) => (
-                                    <TouchableOpacity key={idx} style={styles.card}>
+                                    <TouchableOpacity 
+                                    key={idx} 
+                                    style={styles.card}
+                                    onPress={() => router.push({pathname: '/choice', params: { category: cat.name, description: cat.description} })}>
                                         <Text style={styles.text}>{cat.name}</Text>
                                     </TouchableOpacity>
                                 ))}

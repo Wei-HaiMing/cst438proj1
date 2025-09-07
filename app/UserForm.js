@@ -12,20 +12,28 @@ const UserForm = () => {
     const handleSubmit = async () => {
         try{
             //validating form data
-            if(!form.name|| !form.password){
-                throw new Error('All fields are required');
+            if(!form.name.trim() || !form.password.trim()){
+                Alert.alert('Error', 'All fields are required');
+                return;
             }
 
-            await db.execAsync(
+            await db.runAsync(
                 'INSERT INTO users (name, password) VALUES (?, ?);',
                 [form.name, form.password]
               );
 
-            Alert.alert('Success', 'User added successfully');
-            setForm({
-                name: '',
-                password: '',
-            });
+            const result = await db.getFirstAsync(
+                'SELECT * FROM users WHERE name = ? ORDER BY id DESC LIMIT 1',
+                [form.name]
+              );
+
+            if(result){
+                Alert.alert('Success', `User ${result.name} added successfully!`);
+            }else{
+                Alert.alert('Error', 'User insert failed.');
+            }
+
+            setForm({ name: '', password: '' });
         }catch(error){
             console.error(error);
             Alert.alert('Error', error.message || 'An error occurred while adding a user');
@@ -45,6 +53,7 @@ const UserForm = () => {
                 placeholder="Password"
                 value={form.password}
                 onChangeText={(text) => setForm({...form, password: text})}
+                secureTextEntry={true} 
             />
             <Button title="Add User" onPress={handleSubmit} />
         </View>

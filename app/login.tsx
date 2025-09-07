@@ -1,9 +1,9 @@
-// /*
-// Author: Armando Vega
-// Date Last Modified: 9 September 2025
-// Summary: Login page for the app. I put comments everywhere since this is my first time
-// working with ReactNative.
-// */
+/*
+Author: Armando Vega
+Date Last Modified: 9 September 2025
+Summary: Login page for the app. I put comments everywhere since this is my first time
+working with ReactNative.
+*/
 
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';

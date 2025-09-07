@@ -1,6 +1,6 @@
+import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
-import { useSQLiteContext } from 'expo-sqlite';
 
 const UserForm = () => {
     const [form, setForm] = useState({
@@ -16,7 +16,7 @@ const UserForm = () => {
                 throw new Error('All fields are required');
             }
 
-            await db.runAsync(
+            await db.execAsync(
                 'INSERT INTO users (name, password) VALUES (?, ?);',
                 [form.name, form.password]
               );

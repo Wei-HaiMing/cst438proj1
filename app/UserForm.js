@@ -2,7 +2,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
 
-const UserForm = () => {
+const UserForm = ({ mode = 'signup' }) => {
     const [form, setForm] = useState({
         name: '',
         password: '',
@@ -16,7 +16,7 @@ const UserForm = () => {
                 Alert.alert('Error', 'All fields are required');
                 return;
             }
-
+            // TODO: enter branching path here
             await db.runAsync(
                 'INSERT INTO users (name, password) VALUES (?, ?);',
                 [form.name, form.password]

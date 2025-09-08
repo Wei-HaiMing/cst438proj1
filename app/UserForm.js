@@ -17,20 +17,24 @@ const UserForm = ({ mode = 'signup' }) => {
                 return;
             }
             // TODO: enter branching path here
-            await db.runAsync(
-                'INSERT INTO users (name, password) VALUES (?, ?);',
-                [form.name, form.password]
-              );
+            if(mode === 'signup'){
+                await db.runAsync(
+                    'INSERT INTO users (name, password) VALUES (?, ?);',
+                    [form.name, form.password]
+                );
 
-            const result = await db.getFirstAsync(
-                'SELECT * FROM users WHERE name = ? ORDER BY id DESC LIMIT 1',
-                [form.name]
-              );
+                const result = await db.getFirstAsync(
+                    'SELECT * FROM users WHERE name = ? ORDER BY id DESC LIMIT 1',
+                    [form.name]
+                );
 
-            if(result){
-                Alert.alert('Success', `User ${result.name} added successfully!`);
-            }else{
-                Alert.alert('Error', 'User insert failed.');
+                if(result){
+                    Alert.alert('Success', `User ${result.name} added successfully!`);
+                }else{
+                    Alert.alert('Error', 'User insert failed.');
+                }
+            } else if(mode === 'login'){
+                console.log('Login mode is not implemented yet.');
             }
 
             setForm({ name: '', password: '' });

@@ -9,7 +9,8 @@ import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 import { Pressable, TextInput, Text } from 'react-native-gesture-handler';
 import { Platform, StyleSheet } from 'react-native';
-
+import UserForm from './UserForm';
+import UserList from './UserList';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -23,12 +24,13 @@ export default function LoginScreen() {
   return (
     <View style={{ padding: 20 }}>
       <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Login</Text>
-      <TextInput placeholder="Email" style={{ borderWidth: 1, marginVertical: 8, padding: 8 }} />
-      <TextInput placeholder="Password" secureTextEntry style={{ borderWidth: 1, marginVertical: 8, padding: 8 }} />
+      {/* <TextInput placeholder="Email" style={{ borderWidth: 1, marginVertical: 8, padding: 8 }} />
+      <TextInput placeholder="Password" secureTextEntry style={{ borderWidth: 1, marginVertical: 8, padding: 8 }} /> */}
       <View style={{ marginVertical: 8 }} />
 
-
-      <Pressable
+      <UserForm mode="login" />
+      <UserList />
+      {/* <Pressable
         onPress={handleLogin}
         style={({pressed}) => [
         {
@@ -55,7 +57,7 @@ export default function LoginScreen() {
         {({pressed}) => (
             <Text style={styles.text}>{pressed ? 'Pressed!' : 'Sign Up'}</Text>
         )}
-    </Pressable>
+    </Pressable> */}
     </View>
   );
 }

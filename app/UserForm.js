@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
 
 const UserForm = ({ mode = 'signup' }) => {
-    const [form, setForm] = useState({
+    const [form, setForm] = useState({ // text in the text boxes
         name: '',
         password: '',
     });
@@ -35,6 +35,21 @@ const UserForm = ({ mode = 'signup' }) => {
                 }
             } else if(mode === 'login'){
                 console.log('Login mode is not implemented yet.');
+                
+                const existingData = await db.getFirstAsync(
+                    `SELECT * FROM users WHERE name = ? AND password = ?` ,
+                    [form.name, form.password]
+                );
+                if(existingData){
+                    Alert.alert('Success', `Welcome back, ${existingData.name}!`);
+                } else {
+                    Alert.alert('Error', 'Invalid name or password.');
+                }
+
+                await db.runAsync( // verify user exists and is accurate
+                    'SELECT * FROM users WHERE name = ? AND password = ?',
+                    [form.name, form.password]
+                );
             }
 
             setForm({ name: '', password: '' });

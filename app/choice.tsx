@@ -234,5 +234,4 @@ const styles = StyleSheet.create({
   incorrectAnswer: {
     backgroundColor: '#ffb6b6',
   },
-
 });

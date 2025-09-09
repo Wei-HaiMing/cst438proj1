@@ -1,8 +1,30 @@
+/**
+ * Trivia Categories Screen Component
+ * 
+ * This screen allows users to choose what category they want to choose for the trivia game.
+ * The categories are generated via the OpenAI API, which makes categories not static.
+ * 
+ * Features:
+ * - AI-powered category generation via ChatGPT API
+ * - Animated fade-in effect for category display
+ * - Grid layout with 2 categories per row
+ * - Loading state management
+ * - Responsive design with styled components
+ * 
+ * @author CST-438 Project Team
+ * @version 1.0
+ * @date Fall 2025
+ */
+
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { askChatGPT } from '../lib/chatgpt';
 
+/**
+ * Main functional component for the Trivia Categories screen
+ * Handles category generation, state management, and user interactions
+ */
 export default function TriviaCategoriesScreen() {
     const router = useRouter();
     const chatPrompt = `Come up with 4 fun trivia categories.  Your response should strictly follow the following format:
@@ -13,6 +35,19 @@ export default function TriviaCategoriesScreen() {
     const [loading, setLoading] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
 
+    /**
+     * Handles the generation of trivia categories from ChatGPT
+     * 
+     * This async function:
+     * 1. Sets loading state to true
+     * 2. Sends a structured prompt to ChatGPT API
+     * 3. Parses the response into category objects
+     * 4. Updates state with new categories
+     * 5. Triggers fade-in animation
+     * 
+     * Expected response format: "Category1-Description1|Category2-Description2|..."
+     * TODO: Switch to handle a JSON response.
+     */
     const handleGetCategories = async () => {
         setLoading(true);
         const response = await askChatGPT(chatPrompt);
@@ -62,6 +97,16 @@ export default function TriviaCategoriesScreen() {
     );
 }
 
+/**
+ * StyleSheet for TriviaCategoriesScreen
+ * 
+ * Defines the visual styling for all components in the screen:
+ * - Container: Pink background (#f5a7a7ff) with centered content
+ * - Cards: Orange/yellow (#f7c873) rounded rectangles for categories
+ * - Row layout: Flexbox for 2-column grid arrangement
+ * - Typography: Bold, dark text for readability
+ * - Spacing: Consistent margins and padding throughout
+ */
 const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',

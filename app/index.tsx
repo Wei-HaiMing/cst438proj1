@@ -15,13 +15,6 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <View 
-      style={{ backgroundColor: 'white' }}>
-
-      <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
-          <Text>Welcome to Trivia!</Text>
-      </TouchableOpacity>
-      </View>
       <Text>Edit app/index.tsx to edit this screen.</Text>
       
             <View 

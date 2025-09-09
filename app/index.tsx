@@ -1,3 +1,4 @@
+
 import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 // import { Button, Pressable } from "react-native-gesture-handler";
 import { useRouter } from 'expo-router';
@@ -14,6 +15,13 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+      <View 
+      style={{ backgroundColor: 'white' }}>
+
+      <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
+          <Text>Welcome to Trivia!</Text>
+      </TouchableOpacity>
+      </View>
       <Text>Edit app/index.tsx to edit this screen.</Text>
       
             <View 

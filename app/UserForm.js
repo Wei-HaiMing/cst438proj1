@@ -18,7 +18,7 @@ const UserForm = ({ mode = 'signup' }) => {
                 Alert.alert('Error', 'All fields are required');
                 return;
             }
-            // TODO: enter branching path here
+            
             if(mode === 'signup'){
                 await db.runAsync(
                     'INSERT INTO UserInfo (name, password) VALUES (?, ?);',
@@ -39,7 +39,6 @@ const UserForm = ({ mode = 'signup' }) => {
 
                 setForm({ name: '', password: '' });
             } else if(mode === 'login'){
-                console.log('Login mode is not implemented yet.');
                 
                 const existingData = await db.getFirstAsync(
                     `SELECT * FROM UserInfo WHERE name = ? AND password = ?` ,

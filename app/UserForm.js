@@ -32,7 +32,6 @@ const UserForm = ({ mode = 'signup' }) => {
 
                 if(result){
                     console.log('User inserted with ID:', result.id);
-                    setModalVisible(true);
                     Alert.alert('Success', `User ${result.name} added successfully!`);
                 }else{
                     Alert.alert('Error', 'User insert failed.');

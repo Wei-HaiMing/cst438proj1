@@ -1,6 +1,7 @@
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const UserForm = ({ mode = 'signup' }) => {
     const [form, setForm] = useState({ // text in the text boxes
@@ -8,6 +9,7 @@ const UserForm = ({ mode = 'signup' }) => {
         password: '',
     });
     const db = useSQLiteContext();
+    const router = useRouter();
 
     const handleSubmit = async () => {
         try{
@@ -19,40 +21,43 @@ const UserForm = ({ mode = 'signup' }) => {
             // TODO: enter branching path here
             if(mode === 'signup'){
                 await db.runAsync(
-                    'INSERT INTO users (name, password) VALUES (?, ?);',
+                    'INSERT INTO UserInfo (name, password) VALUES (?, ?);',
                     [form.name, form.password]
                 );
 
                 const result = await db.getFirstAsync(
-                    'SELECT * FROM users WHERE name = ? ORDER BY id DESC LIMIT 1',
+                    'SELECT * FROM UserInfo WHERE name = ? ORDER BY id DESC LIMIT 1',
                     [form.name]
                 );
 
                 if(result){
+                    console.log('User inserted with ID:', result.id);
+                    setModalVisible(true);
                     Alert.alert('Success', `User ${result.name} added successfully!`);
                 }else{
                     Alert.alert('Error', 'User insert failed.');
                 }
+
+                setForm({ name: '', password: '' });
             } else if(mode === 'login'){
                 console.log('Login mode is not implemented yet.');
                 
                 const existingData = await db.getFirstAsync(
-                    `SELECT * FROM users WHERE name = ? AND password = ?` ,
+                    `SELECT * FROM UserInfo WHERE name = ? AND password = ?` ,
                     [form.name, form.password]
                 );
                 if(existingData){
                     Alert.alert('Success', `Welcome back, ${existingData.name}!`);
+                    router.replace('/trivia_categories');
                 } else {
                     Alert.alert('Error', 'Invalid name or password.');
                 }
 
-                await db.runAsync( // verify user exists and is accurate
-                    'SELECT * FROM users WHERE name = ? AND password = ?',
-                    [form.name, form.password]
-                );
+                setForm({ name: '', password: '' });
+                
             }
 
-            setForm({ name: '', password: '' });
+            
         }catch(error){
             console.error(error);
             Alert.alert('Error', error.message || 'An error occurred while adding a user');
@@ -60,22 +65,32 @@ const UserForm = ({ mode = 'signup' }) => {
 };
 
     return(
-        <View style={styles.container}>
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                value={form.name}
-                onChangeText={(text) => setForm({...form, name: text})}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={form.password}
-                onChangeText={(text) => setForm({...form, password: text})}
-                secureTextEntry={true} 
-            />
-            <Button title="Add User" onPress={handleSubmit} />
-        </View>
+        <>
+            <View style={styles.container}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Name"
+                    value={form.name}
+                    onChangeText={(text) => setForm({...form, name: text})}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    value={form.password}
+                    onChangeText={(text) => setForm({...form, password: text})}
+                    secureTextEntry={true} 
+                />
+                <Button title={(mode === "login") ? "Sign In" : "Sign Up"} onPress={handleSubmit} />
+                {mode === "login" && (
+                    <>
+                        <View style={{ height : 20}} />
+                        <Button title="Need an account? Sign Up!" 
+                                onPress ={ () => router.push('/signup') } 
+                        />
+                    </>
+                )}
+            </View>
+        </>
     );
 }
 

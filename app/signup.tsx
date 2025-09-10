@@ -9,7 +9,7 @@ export default function SignupScreen() {
         Sign Up
       </Text>
 
-      <UserForm />
+      <UserForm mode="signup" />
       <UserList />
     </View>
   );

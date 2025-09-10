@@ -11,7 +11,7 @@ const UserList = () => {
   //Function to fetch all users from the "users" table
   const loadUsers = async () => {
     try {
-      const results = await db.getAllAsync("SELECT * FROM users;");
+      const results = await db.getAllAsync("SELECT * FROM UserInfo;");
       setUsers(results); //update state so UI re-renders with new data
     } catch (error) {
       console.error("Error loading users:", error);

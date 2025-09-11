@@ -8,4 +8,5 @@ describe('<HomeScreen />', () => {
     getByText('Welcome!');
   });
   test('smoke', () => expect(true).toBe(true));
+  test('smoke2', () => expect("89" === "banana").toBe(false));
 });

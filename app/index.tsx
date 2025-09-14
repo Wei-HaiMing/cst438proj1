@@ -1,11 +1,13 @@
 
-import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View, } from "react-native";
 // import { Button, Pressable } from "react-native-gesture-handler";
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, Text } from 'react-native-gesture-handler';
 
 export default function Index() {
   const router = useRouter();
+  const [channel, setChannel] = useState('1');
   
   return (
     <SafeAreaView
@@ -22,6 +24,13 @@ export default function Index() {
 
               <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
                   <Text>Welcome to Trivia!</Text>
+              </TouchableOpacity>
+            </View>
+            <View 
+              style={{ backgroundColor: 'grey' }}>
+
+              <TouchableOpacity onPress={() => router.push(`/channel/${channel}`)}>
+                  <Text>Multiplayer</Text>
               </TouchableOpacity>
             </View>
     <Pressable

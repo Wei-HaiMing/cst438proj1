@@ -3,14 +3,25 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { askChatGPT } from '../lib/chatgpt';
 
-const TriviaScreen = () => {
+type TriviaProps = {
+  onClick: (questionNum: number, score: number) => void;
+  category?: string;
+  description?: string;
+  onBackToCategories?: () => void;
+}
+
+const TriviaScreen = ({onClick, category: propCategory, description: propDescription, onBackToCategories}: TriviaProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [question, setQuestion] = useState<string>('');
   const [answers, setAnswers] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { category, description } = useLocalSearchParams();
+  const { category: routeCategory, description: routeDescription } = useLocalSearchParams();
+  
+  // Use props first, fallback to route params
+  const category = propCategory || routeCategory;
+  const description = propDescription || routeDescription;
   const [parsedQuestions, setParsedQuestions] = useState<
   { question: String; answers: string[]; correctIndex: number }[]
   >([]);
@@ -104,6 +115,8 @@ Make the questions engaging and appropriately challenging. Ensure each question 
     if (isCorrect) {
       setScore(score + 1);
     }
+
+    onClick(currentQuestionIndex+1, score);  //broadcasts to supabase
     
     setTimeout(() => {
       setSelected(null);
@@ -136,6 +149,17 @@ Make the questions engaging and appropriately challenging. Ensure each question 
       <>
       {/* Question Counter and Navigation */}
       <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => {
+            if (onBackToCategories) {
+              onBackToCategories();
+            } else {
+              router.back();
+            }
+          }}>
+          <Text style={styles.backButtonText}>← Back to Categories</Text>
+        </TouchableOpacity>
         <Text style={styles.questionCounter}>
           Question {currentQuestionIndex + 1} of {parsedQuestions.length}
         </Text>
@@ -262,6 +286,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     elevation: 4,
+  },
+  backButton: {
+    padding: 8,
+    marginBottom: 10,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: "#007AFF",
+    fontWeight: "500",
   },
 });
 

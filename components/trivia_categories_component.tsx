@@ -22,10 +22,17 @@ import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from
 import { askChatGPT } from '../lib/chatgpt';
 
 /**
+ * Props interface for the Trivia Categories screen
+ */
+interface TriviaCategoriesProps {
+    onCategorySelect?: (category: string, description: string) => void;
+}
+
+/**
  * Main functional component for the Trivia Categories screen
  * Handles category generation, state management, and user interactions
  */
-const TriviaCategoriesScreen = () => {
+const TriviaCategoriesScreen = ({ onCategorySelect }: TriviaCategoriesProps) => {
     const router = useRouter();
     const chatPrompt = `Come up with 4 fun trivia categories.  Your response should strictly follow the following format:
                             (first category's name)-(discription)|(second category's name)-(discription)|ect.
@@ -84,7 +91,13 @@ const TriviaCategoriesScreen = () => {
                                     <TouchableOpacity 
                                     key={idx} 
                                     style={styles.card}
-                                    onPress={() => router.push({pathname: '/choice', params: { category: cat.name, description: cat.description} })}>
+                                    onPress={() => {
+                                        if (onCategorySelect) {
+                                            onCategorySelect(cat.name, cat.description);
+                                        } else {
+                                            router.push({pathname: '/choice', params: { category: cat.name, description: cat.description} });
+                                        }
+                                    }}>
                                         <Text style={styles.text}>{cat.name}</Text>
                                     </TouchableOpacity>
                                 ))}

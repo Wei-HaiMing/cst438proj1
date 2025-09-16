@@ -1,8 +1,7 @@
 
 import { StyleSheet, View } from "react-native";
-// import { Button, Pressable } from "react-native-gesture-handler";
 import { useRouter } from 'expo-router';
-import { Pressable, Text, TouchableOpacity } from 'react-native-gesture-handler';
+import { Text, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "react-native";
 export default function Index() {

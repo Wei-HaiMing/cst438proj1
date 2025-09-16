@@ -142,7 +142,7 @@ Make the questions engaging and appropriately challenging. Ensure each question 
           Question {currentQuestionIndex + 1} of {parsedQuestions.length}
         </Text>
         <Text style={styles.questionCounter}>
-          Score: {score} / {currentQuestionIndex + 1}
+          Score: {score} / {currentQuestionIndex}
         </Text>
       </View>
 

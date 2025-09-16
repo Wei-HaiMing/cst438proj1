@@ -8,6 +8,12 @@ module.exports = {
         extra: {
             apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY
            
-        }
+        },
+        plugins: [
+            "expo-font",
+            "expo-router",
+            "expo-sqlite",
+            "expo-web-browser"
+        ]
     }
 };

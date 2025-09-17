@@ -1,89 +1,80 @@
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { 
+  ActivityIndicator, 
+  Alert, 
+  SafeAreaView, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Animated 
+} from "react-native";
 import { askChatGPT } from '../lib/chatgpt';
 
 export default function TriviaScreen() {
+  // Tracks which answer the user has selected
   const [selected, setSelected] = useState<string | null>(null);
+
+  // Makes sure the user can’t keep pressing answers after choosing one
   const [hasAnswered, setHasAnswered] = useState(false);
+
+  // Score counter (just keeps going up as they get answers right)
   const [score, setScore] = useState(0);
-  const [question, setQuestion] = useState<string>('');
-  const [answers, setAnswers] = useState<string[]>([]);
+
+  // Loading state while we wait for ChatGPT to give us questions
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Category and description passed in from the Categories screen
   const { category, description } = useLocalSearchParams();
+
+  // Stores the full set of parsed questions coming from ChatGPT
   const [parsedQuestions, setParsedQuestions] = useState<
-  { question: String; answers: string[]; correctIndex: number }[]
+    { question: String; answers: string[]; correctIndex: number }[]
   >([]);
+
+  // Tracks where we’re at in the quiz (which question number)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  
+
+  // Fade animation for when a new question comes in
+  // Starts at 0 (invisible) → animates to 1 (fully visible)
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  // ------------------ Fetching questions from ChatGPT ------------------
   useEffect(() => {
     const fetchQuestion = async () => {
       setLoading(true);
+
+      // This prompt asks ChatGPT for 8 questions in JSON format only
       const questionAndAnswerPrompt = `Generate 8 fun trivia questions with 4 multiple choice answers each for the following category.
 
 Category: ${category}
 Description: ${description}
 
 IMPORTANT: Respond with ONLY a valid JSON array. Each question should be an object with:
-- "question": the trivia question (string)
-- "answers": array of exactly 4 possible answers (strings)
-- "correctIndex": index (0-3) of the correct answer (number)
+- "question": string
+- "answers": array of 4 strings
+- "correctIndex": number (0-3)`;
 
-Example format:
-[
-  {
-    "question": "What is the capital of France?",
-    "answers": ["London", "Paris", "Berlin", "Rome"],
-    "correctIndex": 1
-  }
-]
-
-Make the questions engaging and appropriately challenging. Ensure each question has exactly 4 unique answers with only one correct answer.`;
-      
-      try{
+      try {
         const response = await askChatGPT(questionAndAnswerPrompt);
-        
-        // Try to parse JSON response
-        let parsed;
-        try {
-          parsed = JSON.parse(response.trim());
-        } catch (jsonError) {
-          // Fallback: try to extract JSON from response if it contains extra text
-          const jsonMatch = response.match(/\[[\s\S]*\]/);
-          if (jsonMatch) {
-            parsed = JSON.parse(jsonMatch[0]);
-          } else {
-            throw new Error('Invalid JSON response from ChatGPT');
-          }
-        }
 
-        // Validate the parsed data
-        const validatedQuestions = parsed.filter((item: any) => {
-          return (
-            item &&
-            typeof item.question === 'string' &&
-            Array.isArray(item.answers) &&
-            item.answers.length === 4 &&
-            typeof item.correctIndex === 'number' &&
-            item.correctIndex >= 0 &&
-            item.correctIndex < 4 &&
-            item.answers.every((answer: any) => typeof answer === 'string' && answer.trim().length > 0)
-          );
-        });
+        // Sometimes ChatGPT wraps JSON in extra text → try to clean it
+        const jsonMatch = response.match(/\[[\s\S]*\]/);
+        const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(response);
 
-        if (validatedQuestions.length === 0) {
-          throw new Error('No valid questions found in response');
-        }
-
-        setParsedQuestions(validatedQuestions);
-      } catch (e){
-        console.error('Error fetching or parsing questions:', e);
-        Alert.alert(
-          'Error Loading Questions',
-          'Failed to load trivia questions. Please try again.',
-          [{ text: 'OK' }]
+        // Sanity check: make sure each item has what we expect
+        const validated = parsed.filter((item: any) =>
+          item &&
+          typeof item.question === 'string' &&
+          Array.isArray(item.answers) &&
+          item.answers.length === 4
         );
-        setParsedQuestions([]);
+
+        setParsedQuestions(validated);
+      } catch (e) {
+        console.error('Error fetching questions:', e);
+        Alert.alert('Error', 'Could not load trivia questions.');
       }
       setLoading(false);
     };
@@ -91,18 +82,31 @@ Make the questions engaging and appropriately challenging. Ensure each question 
     fetchQuestion();
   }, [category, description]);
 
+  // ------------------ Fade-in effect when switching questions ------------------
+  useEffect(() => {
+    // Reset opacity to 0 every time we move to a new question
+    fadeAnim.setValue(0);
+
+    // Animate to full visibility over half a second
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true
+    }).start();
+  }, [currentQuestionIndex]);
+
+  // ------------------ Answer selection logic ------------------
   const handlePress = (answer: string, index: number) => {
-    if (hasAnswered) return;
+    if (hasAnswered) return; // Don’t allow double-clicking
     setSelected(answer);
     setHasAnswered(true);
 
+    // Check if answer is correct
     const currentQ = parsedQuestions[currentQuestionIndex];
-    const isCorrect = index == currentQ.correctIndex;
-    
-    if (isCorrect) {
-      setScore(score + 1);
-    }
-    
+    const isCorrect = index === currentQ.correctIndex;
+    if (isCorrect) setScore(score + 1);
+
+    // Wait a second so user sees the green/red feedback before moving on
     setTimeout(() => {
       setSelected(null);
       setHasAnswered(false);
@@ -110,68 +114,67 @@ Make the questions engaging and appropriately challenging. Ensure each question 
     }, 1000);
   };
 
+  // ------------------ Move to the next question ------------------
   const nextQuestion = () => {
     if (currentQuestionIndex < parsedQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelected(null);
     } else {
-      // Quiz completed
-      Alert.alert(
-        'Quiz Complete!',
-        `You scored ${score} out of ${parsedQuestions.length} questions!`,
-        [{ text: 'OK' }]
-      );
+      // Quiz is finished → show final score
+      Alert.alert('Quiz Complete!', `You scored ${score} / ${parsedQuestions.length}!`);
     }
   };
 
-
+  // Grab the question we’re currently on
   const currentQuestion = parsedQuestions[currentQuestionIndex];
 
+  // ------------------ Render ------------------
   return (
     <SafeAreaView style={styles.container}>
-      {loading ?(
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {loading ? (
+        // Loading spinner while we wait for ChatGPT
+        <View style={styles.center}>
           <ActivityIndicator size="large" color="#888" />
           <Text>Loading...</Text>
         </View>
-      ): currentQuestion ? (
-      <>
-      {/* Question Counter and Navigation */}
-      <View style={styles.header}>
-        <Text style={styles.questionCounter}>
-          Question {currentQuestionIndex + 1} of {parsedQuestions.length}
-        </Text>
-        <Text style={styles.questionCounter}>
-          Score: {score} / {currentQuestionIndex + 1}
-        </Text>
-      </View>
+      ) : currentQuestion ? (
+        // Animated wrapper → fades questions in/out
+        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+          {/* Question counter + Score at the top */}
+          <View style={styles.header}>
+            <Text style={styles.questionCounter}>
+              Question {currentQuestionIndex + 1} / {parsedQuestions.length}
+            </Text>
+            <Text style={styles.questionCounter}>
+              Score: {score}
+            </Text>
+          </View>
 
-      {/* Question */}
-      <Text style={styles.question}>{currentQuestion.question}</Text>
+          {/* The trivia question itself */}
+          <Text style={styles.question}>{currentQuestion.question}</Text>
 
-      {/* Answers in a grid */}
-      <View style={styles.grid}>
-        {currentQuestion.answers.map((answer, index) => {
-          const isSelected = selected === answer;
-          const isCorrect = index == currentQuestion.correctIndex;
-          
-          return(
-          <TouchableOpacity
-            key={answer}
-            style={[
-              styles.answerBox,
-              isSelected ? (isCorrect ? styles.correctAnswer : styles.incorrectAnswer) : {}
-            ]}
-            onPress={() => handlePress(answer, index)}
-            activeOpacity={0.7}
-            disabled={hasAnswered}
-          >
-            <Text style={styles.answerText}>{answer}</Text>
-          </TouchableOpacity>
-          );  
-      })}
-      </View>
-      </>
+          {/* The 4 possible answers displayed in a grid of cards */}
+          <View style={styles.grid}>
+            {currentQuestion.answers.map((answer, index) => {
+              const isSelected = selected === answer;
+              const isCorrect = index === currentQuestion.correctIndex;
+
+              return (
+                <TouchableOpacity
+                  key={answer}
+                  style={[
+                    styles.card,
+                    isSelected ? (isCorrect ? styles.correct : styles.incorrect) : {}
+                  ]}
+                  onPress={() => handlePress(answer, index)}
+                  activeOpacity={0.8} // gives a nice press feedback
+                  disabled={hasAnswered}
+                >
+                  <Text style={styles.answerText}>{answer}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </Animated.View>
       ) : (
         <Text>No questions available.</Text>
       )}
@@ -179,11 +182,17 @@ Make the questions engaging and appropriately challenging. Ensure each question 
   );
 }
 
+// ------------------ Styles ------------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fdf6f0",  // pastel background → same as Categories screen
     padding: 20,
-    backgroundColor: "#f2f2f2",
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     alignItems: "center",
@@ -193,45 +202,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     color: "#666",
-    marginBottom: 10,
+    marginBottom: 6,
   },
   question: {
     fontSize: 22,
-    fontWeight: "600",
-    marginBottom: 30,
+    fontWeight: "700",
     textAlign: "center",
+    marginBottom: 30,
+    color: "#333",
   },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 20, 
   },
-  answerBox: {
+  card: {
     width: 140,
     height: 140,
-    backgroundColor: "white",
+    backgroundColor: "#fff7e0",  // same tile color as category cards
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#ccc",
     justifyContent: "center",
     alignItems: "center",
     margin: 10,
-    elevation: 3, 
-    shadowColor: "#000", 
-    shadowOpacity: 0.2,
+
+    // subtle shadow so cards pop off the background
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
+    shadowRadius: 3,
+    elevation: 3,
   },
   answerText: {
     fontSize: 16,
     textAlign: "center",
-    paddingHorizontal: 8,
+    color: "#333",
   },
-  correctAnswer: {
-    backgroundColor: "#b6fcb6"
+  correct: {
+    backgroundColor: "#b6fcb6", // green when correct
   },
-  incorrectAnswer: {
-    backgroundColor: '#ffb6b6',
+  incorrect: {
+    backgroundColor: "#ffb6b6", // red when wrong
   },
 });

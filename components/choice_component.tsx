@@ -56,7 +56,6 @@ Make the questions engaging and appropriately challenging. Ensure each question 
       try{
         const response = await askChatGPT(questionAndAnswerPrompt);
         
-        // Try to parse JSON response
         let parsed;
         try {
           parsed = JSON.parse(response.trim());
@@ -70,7 +69,6 @@ Make the questions engaging and appropriately challenging. Ensure each question 
           }
         }
 
-        // Validate the parsed data
         const validatedQuestions = parsed.filter((item: any) => {
           return (
             item &&
@@ -206,7 +204,14 @@ Make the questions engaging and appropriately challenging. Ensure each question 
           <View style={styles.modalContent}>
             <Text>Your Score:</Text>
             <Text>{score}</Text>
-            <TouchableOpacity onPress={() => { setModalVisible(false); router.push('/trivia_categories'); }}>
+            <TouchableOpacity onPress={() => {
+                  setModalVisible(false);
+                  if (onBackToCategories) {
+                    onBackToCategories();
+                  } else {
+                    router.back();
+                  }
+              }}>
               <Text>Play Again</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { setModalVisible(false); router.push('/'); }}>

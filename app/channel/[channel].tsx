@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import TriviaScreen from "../../components/choice_component";
 import TriviaCategoriesScreen from "../../components/trivia_categories_component";
 
@@ -25,6 +25,9 @@ const Page = () => {
         const subscription = newChannel.on('broadcast', {event: 'click'}, ({payload}) => {
             setOpponenetStats(payload);
         })
+        .on('broadcast', {event: 'exit'}, ({payload}) => {
+            setSelectedCategory(payload);
+        })
         .on('broadcast', {event: 'category'}, ({ payload }) => {
             setSelectedCategory(payload);
         })
@@ -48,11 +51,6 @@ const Page = () => {
         })
     }
 
-    /*
-    TODO:
-    Const onTriviaExit
-    */
-
     const handleCategorySelect = (category: string, description: string) => {
         setSelectedCategory({ category, description });
         broadcastChannel?.send({
@@ -63,7 +61,17 @@ const Page = () => {
     }
 
     const handleBackToCategories = () => {
-        setSelectedCategory(null);
+        if(opponentStats?.questionNum == 8){
+            setSelectedCategory(null);
+            broadcastChannel?.send({
+                type: 'broadcast',
+                event: 'exit',
+                payload: null
+            })
+        }
+        else{
+            Alert.alert("Must wait for opponent to finish");
+        }
     }
 
     return (

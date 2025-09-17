@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import TriviaScreen from "../../components/choice_component";
 import TriviaCategoriesScreen from "../../components/trivia_categories_component";
 
@@ -14,6 +14,7 @@ const Page = () => {
     const [broadcastChannel, setBroadcastChannel] = useState<RealtimeChannel | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<{category: string, description: string} | null>(null);
+    const [opponentStats, setOpponenetStats] = useState<{questionNum: number, score: number} | null>(null);
 
     useEffect(() => {
         if(!channel || isConnected ) return;
@@ -22,8 +23,12 @@ const Page = () => {
         setBroadcastChannel(newChannel);
 
         const subscription = newChannel.on('broadcast', {event: 'click'}, ({payload}) => {
-            console.log('Received click event', payload);
-        }).subscribe((status) =>{
+            setOpponenetStats(payload);
+        })
+        .on('broadcast', {event: 'category'}, ({ payload }) => {
+            setSelectedCategory(payload);
+        })
+        .subscribe((status) =>{
             if (status === 'SUBSCRIBED')
                 setIsConnected(true);
         });
@@ -40,13 +45,18 @@ const Page = () => {
         broadcastChannel?.send({
             type: 'broadcast',
             event: 'click',
-            payload: { questionNum, score}
+            payload: { questionNum, score }
         })
         // Here you can broadcast to Supabase or handle the game state
     }
 
     const handleCategorySelect = (category: string, description: string) => {
         setSelectedCategory({ category, description });
+        broadcastChannel?.send({
+            type: 'broadcast',
+            event: 'category',
+            payload: { category, description }
+        })
     }
 
     const handleBackToCategories = () => {
@@ -58,12 +68,28 @@ const Page = () => {
             <Stack.Screen options={{ title: `Channel ${channel}` }} />
             {isConnected && (
             selectedCategory ? (
-                <TriviaScreen 
-                onClick={onTriviaClick}
-                category={selectedCategory.category}
-                description={selectedCategory.description}
-                onBackToCategories={handleBackToCategories}
-                />
+                <>
+                    <View style={{ 
+                        padding: 16, 
+                        backgroundColor: '#f0f0f0', 
+                        borderBottomWidth: 1, 
+                        borderBottomColor: '#ddd',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                            Opponent Score: {opponentStats?.score || 0}
+                        </Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                            Question: {opponentStats?.questionNum || 0}
+                        </Text>
+                    </View>
+                    <TriviaScreen
+                        onClick={onTriviaClick}
+                        category={selectedCategory.category}
+                        description={selectedCategory.description}
+                        onBackToCategories={handleBackToCategories} />
+                </>
             ) : (
                 <TriviaCategoriesScreen onCategorySelect={handleCategorySelect} />
             )

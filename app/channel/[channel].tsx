@@ -41,14 +41,17 @@ const Page = () => {
     }, [channel])
 
     const onTriviaClick = (questionNum: number, score: number) => {
-        // console.log("Trivia question: ", questionNum, ". Current score: ", score);
         broadcastChannel?.send({
             type: 'broadcast',
             event: 'click',
             payload: { questionNum, score }
         })
-        // Here you can broadcast to Supabase or handle the game state
     }
+
+    /*
+    TODO:
+    Const onTriviaExit
+    */
 
     const handleCategorySelect = (category: string, description: string) => {
         setSelectedCategory({ category, description });

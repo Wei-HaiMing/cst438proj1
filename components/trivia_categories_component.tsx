@@ -95,7 +95,7 @@ const TriviaCategoriesScreen = ({ onCategorySelect }: TriviaCategoriesProps) => 
                                         if (onCategorySelect) {
                                             onCategorySelect(cat.name, cat.description);
                                         } else {
-                                            router.push({pathname: '/choice', params: { category: cat.name, description: cat.description} });
+                                            router.push({pathname: '/choice_component', params: { category: cat.name, description: cat.description} });
                                         }
                                     }}>
                                         <Text style={styles.text}>{cat.name}</Text>

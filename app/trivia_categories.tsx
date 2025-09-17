@@ -110,12 +110,19 @@ export default function TriviaCategoriesScreen() {
                         <View key={rowIdx} style={styles.row}>
                             {categories.slice(rowIdx * 2, rowIdx * 2 + 2).map((cat, idx) => (
                                 <TouchableOpacity
-                                    key={idx}
-                                    style={styles.card}
-                                    onPress={() => router.push({ pathname: '/choice', params: { category: cat.name, description: cat.description } })}
-                                >
-                                    <Text style={styles.text}>{cat.name}</Text>
-                                </TouchableOpacity>
+  key={idx}
+  style={styles.card}
+  activeOpacity={0.8}
+  onPress={() =>
+    router.push({
+      pathname: '/choice',
+      params: { category: cat.name, description: cat.description },
+    })
+  }
+>
+  <Text style={styles.cardTitle}>{cat.name}</Text>
+  <Text style={styles.cardDescription}>{cat.description}</Text>
+</TouchableOpacity>
                             ))}
                         </View>
                     ))}
@@ -127,40 +134,66 @@ export default function TriviaCategoriesScreen() {
 
 //Stylesheet for how the page is going to be displayed
 const styles = StyleSheet.create({
-    logoutButton: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        backgroundColor: '#66a8ff',
-        padding: 8,
-        borderRadius: 6,
-        zIndex: 10,
-    },
-    logoutText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 8,
-    },
-    card: {
-        backgroundColor: '#f7c873',
-        padding: 16,
-        marginHorizontal: 8,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    text: {
-        fontWeight: 'bold',
-        color: '#333',
-        textAlign: 'center',
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#f5a7a7ff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#fdf6f0',
+    paddingHorizontal: 16,
+    paddingTop: 20,
+  },
+  logoutButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#66a8ff',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    zIndex: 10,
+  },
+  logoutText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: '#fff7e0',
+    marginHorizontal: 6,
+    borderRadius: 12,
+    padding: 16,
+    minHeight: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    // shadow for iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+
+    // elevation for Android
+    elevation: 3,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  cardDescription: {
+    fontSize: 13,
+    color: '#666',
+    textAlign: 'center',
+  },
+  text: {
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#333',
+  },
 });

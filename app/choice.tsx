@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter} from "expo-router";
 import React, { useEffect, useState, useRef } from "react";
 import { 
   ActivityIndicator, 
@@ -8,6 +8,7 @@ import {
   Text, 
   TouchableOpacity, 
   View, 
+  Modal,
   Animated 
 } from "react-native";
 import { askChatGPT } from '../lib/chatgpt';
@@ -35,6 +36,8 @@ export default function TriviaScreen() {
 
   // Tracks where we’re at in the quiz (which question number)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const router = useRouter();
 
   // Fade animation for when a new question comes in
   // Starts at 0 (invisible) → animates to 1 (fully visible)
@@ -119,8 +122,8 @@ IMPORTANT: Respond with ONLY a valid JSON array. Each question should be an obje
     if (currentQuestionIndex < parsedQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      // Quiz is finished → show final score
-      Alert.alert('Quiz Complete!', `You scored ${score} / ${parsedQuestions.length}!`);
+      // Quiz completed
+      setModalVisible(true);
     }
   };
 
@@ -178,6 +181,24 @@ IMPORTANT: Respond with ONLY a valid JSON array. Each question should be an obje
       ) : (
         <Text>No questions available.</Text>
       )}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text>Your Score:</Text>
+            <Text>{score}</Text>
+            <TouchableOpacity onPress={() => { setModalVisible(false); router.push('/trivia_categories'); }}>
+              <Text>Play Again</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { setModalVisible(false); router.push('/'); }}>
+              <Text>Home</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -242,5 +263,18 @@ const styles = StyleSheet.create({
   },
   incorrect: {
     backgroundColor: "#ffb6b6", // red when wrong
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: 250,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    elevation: 4,
   },
 });

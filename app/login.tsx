@@ -7,7 +7,7 @@ working with ReactNative.
 
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
-import { TextInput, Text } from 'react-native-gesture-handler';
+import { Text } from 'react-native-gesture-handler';
 import { Platform, StyleSheet } from 'react-native';
 import UserForm from './UserForm';
 import UserList from './UserList';

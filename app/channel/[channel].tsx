@@ -1,6 +1,6 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native';
 import TriviaScreen from "../../components/choice_component";
 import TriviaCategoriesScreen from "../../components/trivia_categories_component";
 
@@ -15,6 +15,9 @@ const Page = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<{category: string, description: string} | null>(null);
     const [opponentStats, setOpponenetStats] = useState<{questionNum: number, score: number} | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const router = useRouter();
 
     useEffect(() => {
         if(!channel || isConnected ) return;
@@ -26,7 +29,9 @@ const Page = () => {
             setOpponenetStats(payload);
         })
         .on('broadcast', {event: 'exit'}, ({payload}) => {
+            setLoading(false);
             setSelectedCategory(payload);
+            setOpponenetStats(payload);
         })
         .on('broadcast', {event: 'category'}, ({ payload }) => {
             setSelectedCategory(payload);
@@ -62,6 +67,7 @@ const Page = () => {
 
     const handleBackToCategories = () => {
         if(opponentStats?.questionNum == 8){
+            setOpponenetStats(null);
             setSelectedCategory(null);
             broadcastChannel?.send({
                 type: 'broadcast',
@@ -71,39 +77,50 @@ const Page = () => {
         }
         else{
             Alert.alert("Must wait for opponent to finish");
+            setLoading(true);
         }
     }
 
     return (
         <View style={{ flex:1, backgroundColor: 'white' }}>
             <Stack.Screen options={{ title: `Channel ${channel}` }} />
-            {isConnected && (
-            selectedCategory ? (
-                <>
-                    <View style={{ 
-                        padding: 16, 
-                        backgroundColor: '#f0f0f0', 
-                        borderBottomWidth: 1, 
-                        borderBottomColor: '#ddd',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between'
-                    }}>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-                            Opponent Score: {opponentStats?.score || 0}
-                        </Text>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-                            Question: {opponentStats?.questionNum || 0}
-                        </Text>
-                    </View>
-                    <TriviaScreen
-                        onClick={onTriviaClick}
-                        category={selectedCategory.category}
-                        description={selectedCategory.description}
-                        onBackToCategories={handleBackToCategories} />
-                </>
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#888" />
+                    <Text>Loading... Waiting for opponent</Text>
+                    <TouchableOpacity onPress={() => { router.push('/') }}>
+                        <Text>Home</Text>
+                    </TouchableOpacity>
+                </View>
             ) : (
-                <TriviaCategoriesScreen onCategorySelect={handleCategorySelect} />
-            )
+                isConnected && (
+                    selectedCategory ? (
+                        <>
+                            <View style={{ 
+                                padding: 16, 
+                                backgroundColor: '#f0f0f0', 
+                                borderBottomWidth: 1, 
+                                borderBottomColor: '#ddd',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between'
+                            }}>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                                    Opponent Score: {opponentStats?.score || 0}
+                                </Text>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                                    Question: {opponentStats?.questionNum || 0}
+                                </Text>
+                            </View>
+                            <TriviaScreen
+                                onClick={onTriviaClick}
+                                category={selectedCategory.category}
+                                description={selectedCategory.description}
+                                onBackToCategories={handleBackToCategories} />
+                        </>
+                    ) : (
+                        <TriviaCategoriesScreen onCategorySelect={handleCategorySelect} />
+                    )
+                )
             )}
         </View>
     )

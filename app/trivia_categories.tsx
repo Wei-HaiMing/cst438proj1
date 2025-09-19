@@ -22,7 +22,7 @@ import { useState, useEffect } from 'react';
 import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { askChatGPT } from '../lib/chatgpt';
-import { useAuth } from '../lib/auth';
+import { useAuth } from '../lib/hooks';
 
 export default function TriviaCategoriesScreen() {
     const router = useRouter(); // navigation hook from expo-router
@@ -33,37 +33,37 @@ export default function TriviaCategoriesScreen() {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // track login state
     const { user, logout } = useAuth();
 
-    // Check if a user is logged in by querying the UserInfo table. 
-    // If a user is stored in the table, mark the user as logged in
-    const checkUser = async () => {
-        try {
-            const users = await db.getAllAsync("SELECT * FROM UserInfo;");
-            setIsLoggedIn(users.length > 0); // logged in if at least one user exists
-        } catch (error) {
-            console.error("Error checking user login:", error);
-        }
-    };
+    // // Check if a user is logged in by querying the UserInfo table. 
+    // // If a user is stored in the table, mark the user as logged in
+    // const checkUser = async () => {
+    //     try {
+    //         const users = await db.getAllAsync("SELECT * FROM UserInfo;");
+    //         setIsLoggedIn(users.length > 0); // logged in if at least one user exists
+    //     } catch (error) {
+    //         console.error("Error checking user login:", error);
+    //     }
+    // };
 
-    // Run checkUser only once when component mounts
-    useEffect(() => {
-        checkUser();
-    }, []);
+    // // Run checkUser only once when component mounts
+    // useEffect(() => {
+    //     checkUser();
+    // }, []);
 
-    /**
-     * Logout function
-     * - Clears all users from UserInfo table
-     * - Updates login state
-     * - Redirects back to landing page
-     */
-    const handleLogout = async () => {
-        try {
-            await db.execAsync("DELETE FROM UserInfo;"); // removes all users
-            setIsLoggedIn(false);
-            router.replace('/'); // go back to landing page
-        } catch (error) {
-            console.error("Error logging out:", error);
-        }
-    };
+    // /**
+    //  * Logout function
+    //  * - Clears all users from UserInfo table
+    //  * - Updates login state
+    //  * - Redirects back to landing page
+    //  */
+    // const handleLogout = async () => {
+    //     try {
+    //         await db.execAsync("DELETE FROM UserInfo;"); // removes all users
+    //         setIsLoggedIn(false);
+    //         router.replace('/'); // go back to landing page
+    //     } catch (error) {
+    //         console.error("Error logging out:", error);
+    //     }
+    // };
 
     // Prompt used to fetch categories from ChatGPT
     // We tell GPT to give us 4 categories with names + descriptions
@@ -97,6 +97,7 @@ export default function TriviaCategoriesScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Hello {user?.name}</Text>
             {/* Page Header → helps avoid empty feel */}
             <Text style={styles.title}>🎉 Choose a Trivia Category</Text>
             <Text style={styles.subtitle}>Powered by AI • Pick something fun!</Text>

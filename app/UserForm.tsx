@@ -1,7 +1,8 @@
+import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useAuth } from '../lib/hooks';
 
 const UserForm = ({ mode = 'signup' }) => {
     const [form, setForm] = useState({ // text in the text boxes
@@ -10,6 +11,13 @@ const UserForm = ({ mode = 'signup' }) => {
     });
     const db = useSQLiteContext();
     const router = useRouter();
+    const { user, isLoggedIn, loading, login, logout, checkAuthStatus } = useAuth();
+    const handleLogin = async (userData) => {
+        const success = await login(userData);
+        if (success) {
+        console.log('Login successful!');
+        }
+    };
 
     const handleSubmit = async () => {
         try{
@@ -31,8 +39,15 @@ const UserForm = ({ mode = 'signup' }) => {
                 );
 
                 if(result){
-                    console.log('User inserted with ID:', result.id);
-                    Alert.alert('Success', `User ${result.name} added successfully!`);
+                    // Store complete user data in AsyncStorage
+                    const userData = {
+                        id: (result as any).id,
+                        name: (result as any).name
+                    };
+                    await handleLogin(userData);
+                    console.log('User inserted with ID:', (result as any).id);
+                    Alert.alert('Success', `User ${(result as any).name} added successfully!`);
+                    router.replace('/trivia_categories');
                 }else{
                     Alert.alert('Error', 'User insert failed.');
                 }
@@ -45,7 +60,13 @@ const UserForm = ({ mode = 'signup' }) => {
                     [form.name, form.password]
                 );
                 if(existingData){
-                    Alert.alert('Success', `Welcome back, ${existingData.name}!`);
+                    // Store complete user data in AsyncStorage
+                    const userData = {
+                        id: (existingData as any).id,
+                        name: (existingData as any).name
+                    };
+                    await handleLogin(userData);
+                    Alert.alert('Success', `Welcome back, ${(existingData as any).name}!`);
                     router.replace('/trivia_categories');
                 } else {
                     Alert.alert('Error', 'Invalid name or password.');
@@ -58,7 +79,7 @@ const UserForm = ({ mode = 'signup' }) => {
             
         }catch(error){
             console.error(error);
-            Alert.alert('Error', error.message || 'An error occurred while adding a user');
+            Alert.alert('Error', (error as Error).message || 'An error occurred while adding a user');
         }
 };
 

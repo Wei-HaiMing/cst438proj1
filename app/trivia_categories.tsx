@@ -99,7 +99,7 @@ export default function TriviaCategoriesScreen() {
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Hello {user?.name}</Text>
             {/* Page Header → helps avoid empty feel */}
-            <Text style={styles.title}>🎉 Choose a Trivia Category</Text>
+            <Text style={styles.title}> Choose a Trivia Category</Text>
             <Text style={styles.subtitle}>Powered by AI • Pick something fun!</Text>
 
             {/* Show logout button if someone is logged in */}
@@ -118,7 +118,7 @@ export default function TriviaCategoriesScreen() {
                         style={styles.getButton}
                     >
                         <Text style={styles.getButtonText}>
-                            {loading ? '✨ AI is picking categories...' : 'Get Categories'}
+                            {loading ? ' AI is picking categories...' : 'Get Categories'}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -140,7 +140,7 @@ export default function TriviaCategoriesScreen() {
                                     }
                                 >
                                     {/* Placeholder emoji → could be dynamic later */}
-                                    <Text style={styles.cardEmoji}>🎯</Text>
+                                    <Text style={styles.cardEmoji}></Text>
                                     <Text style={styles.cardTitle}>{cat.name}</Text>
                                     <Text style={styles.cardDescription}>{cat.description}</Text>
                                 </TouchableOpacity>
@@ -162,7 +162,7 @@ export default function TriviaCategoriesScreen() {
                         });
                     }}
                 >
-                    <Text style={styles.randomText}>🎲 Random Category</Text>
+                    <Text style={styles.randomText}> Random Category</Text>
                 </TouchableOpacity>
             )}
         </SafeAreaView>

@@ -22,6 +22,7 @@ import { useState, useEffect } from 'react';
 import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { askChatGPT } from '../lib/chatgpt';
+import { useAuth } from '../lib/auth';
 
 export default function TriviaCategoriesScreen() {
     const router = useRouter(); // navigation hook from expo-router
@@ -30,6 +31,7 @@ export default function TriviaCategoriesScreen() {
     const [loading, setLoading] = useState(false); // loading state while fetching categories
     const [fadeAnim] = useState(new Animated.Value(0));
     const [isLoggedIn, setIsLoggedIn] = useState(false); // track login state
+    const { user, logout } = useAuth();
 
     // Check if a user is logged in by querying the UserInfo table. 
     // If a user is stored in the table, mark the user as logged in

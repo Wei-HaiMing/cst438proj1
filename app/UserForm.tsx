@@ -2,6 +2,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../lib/auth';
 
 const UserForm = ({ mode = 'signup' }) => {
     const [form, setForm] = useState({ // text in the text boxes
@@ -10,6 +11,13 @@ const UserForm = ({ mode = 'signup' }) => {
     });
     const db = useSQLiteContext();
     const router = useRouter();
+    const { user, isLoggedIn, loading, login, logout, checkAuthStatus } = useAuth();
+    const handleLogin = async (userData) => {
+        const success = await login(userData);
+        if (success) {
+        console.log('Login successful!');
+        }
+    };
 
     const handleSubmit = async () => {
         try{
@@ -31,6 +39,7 @@ const UserForm = ({ mode = 'signup' }) => {
                 );
 
                 if(result){
+                    handleLogin(form.name);
                     console.log('User inserted with ID:', result.id);
                     Alert.alert('Success', `User ${result.name} added successfully!`);
                 }else{

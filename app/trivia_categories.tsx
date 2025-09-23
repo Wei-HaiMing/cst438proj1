@@ -22,6 +22,7 @@ import { useState, useEffect } from 'react';
 import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { askChatGPT } from '../lib/chatgpt';
+import { useAuth } from '../lib/hooks';
 
 export default function TriviaCategoriesScreen() {
     const router = useRouter(); // navigation hook from expo-router
@@ -30,6 +31,7 @@ export default function TriviaCategoriesScreen() {
     const [loading, setLoading] = useState(false); // loading state while fetching categories
     const [fadeAnim] = useState(new Animated.Value(0));
     const [isLoggedIn, setIsLoggedIn] = useState(false); // track login state
+    const { user, logout } = useAuth();
 
     // Check if a user is logged in by querying the UserInfo table. 
     // If a user is stored in the table, mark the user as logged in
@@ -55,8 +57,7 @@ export default function TriviaCategoriesScreen() {
      */
     const handleLogout = async () => {
         try {
-            await db.execAsync("DELETE FROM UserInfo;"); // removes all users
-            setIsLoggedIn(false);
+            await logout();
             router.replace('/'); // go back to landing page
         } catch (error) {
             console.error("Error logging out:", error);
@@ -95,8 +96,9 @@ export default function TriviaCategoriesScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Hello {user?.name}</Text>
             {/* Page Header → helps avoid empty feel */}
-            <Text style={styles.title}> Choose a Trivia Category</Text>
+            <Text style={styles.title}>🎉 Choose a Trivia Category</Text>
             <Text style={styles.subtitle}>Powered by AI • Pick something fun!</Text>
 
             {/* Show logout button if someone is logged in */}

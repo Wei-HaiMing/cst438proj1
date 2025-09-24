@@ -1,8 +1,9 @@
-import { SafeAreaView, StyleSheet, TouchableOpacity, View, } from "react-native";
-// import { Button, Pressable } from "react-native-gesture-handler";
-import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, Text, TextInput } from 'react-native-gesture-handler';
+import { StyleSheet, View } from "react-native";
+import { useRouter } from 'expo-router';
+import { Text, TouchableOpacity, Pressable, TextInput } from 'react-native-gesture-handler';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "react-native";
 
 export default function Index() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function Index() {
         )}
       </View>
 
-      <Pressable
+      {/* <Pressable
         onPress={() => router.push('/login')}
         style={({ pressed }) => [
           {
@@ -71,7 +72,12 @@ export default function Index() {
         {({ pressed }) => (
           <Text style={styles.text}>{pressed ? 'Pressed!' : 'Press Me'}</Text>
         )}
-      </Pressable>
+      </Pressable> */}
+              <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
+                  <Text>Welcome to Trivia!</Text>
+              </TouchableOpacity>
+            <Button title="Go To Login" onPress={() => router.push('/login')} />
+
     </SafeAreaView>
   );
 }

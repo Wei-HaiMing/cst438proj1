@@ -1,9 +1,7 @@
-import { useState } from 'react';
-import { StyleSheet, View } from "react-native";
 import { useRouter } from 'expo-router';
-import { Text, TouchableOpacity, Pressable, TextInput } from 'react-native-gesture-handler';
+import { useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "react-native";
 
 export default function Index() {
   const router = useRouter();

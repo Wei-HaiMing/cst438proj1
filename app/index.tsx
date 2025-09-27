@@ -1,12 +1,17 @@
-
-import { StyleSheet, View } from "react-native";
 import { useRouter } from 'expo-router';
-import { Text, TouchableOpacity } from 'react-native-gesture-handler';
+import { useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "react-native";
+
 export default function Index() {
   const router = useRouter();
-  
+  const [channel, setChannel] = useState('1');
+  const [showMultiplayerInput, setShowMultiplayerInput] = useState(false);
+
+  const handleMultiplayerClick = () => {
+    setShowMultiplayerInput(true);
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -15,18 +20,62 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
       
-            <View 
-              style={{ backgroundColor: 'white' }}>
+      <View style={{ backgroundColor: 'white' }}>
+        <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
+          <Text>Welcome to Trivia!</Text>
+        </TouchableOpacity>
+      </View>
 
+      <View style={{ backgroundColor: 'grey', marginTop: 16 }}>
+        {showMultiplayerInput ? (
+          <View>
+            <TextInput
+              style={{
+                height: 40,
+                width: 100,
+                borderColor: 'grey',
+                borderWidth: 1,
+                marginBottom: 16,
+                textAlign: 'center',
+              }}
+              keyboardType="numeric"
+              value={channel}
+              onChangeText={setChannel}
+              placeholder="Enter number"
+            />
+            <TouchableOpacity onPress={() => router.push(`/channel/${channel}`)}>
+              <Text>Enter</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={handleMultiplayerClick}>
+            <Text>Multiplayer</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {/* <Pressable
+        onPress={() => router.push('/login')}
+        style={({ pressed }) => [
+          {
+            backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+            borderColor: pressed ? 'green' : 'blue',
+            borderWidth: 1,
+          },
+          styles.wrapperCustom,
+        ]}
+      >
+        {({ pressed }) => (
+          <Text style={styles.text}>{pressed ? 'Pressed!' : 'Press Me'}</Text>
+        )}
+      </Pressable> */}
               <TouchableOpacity onPress={() => router.push('/trivia_categories')}>
                   <Text>Welcome to Trivia!</Text>
               </TouchableOpacity>
-            </View>
             <Button title="Go To Login" onPress={() => router.push('/login')} />
+
     </SafeAreaView>
-    
   );
 }
 

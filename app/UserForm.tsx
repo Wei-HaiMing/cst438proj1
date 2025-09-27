@@ -116,21 +116,23 @@ const UserForm = ({ mode = 'signup' }) => {
 const styles = StyleSheet.create({
     container: {
         padding: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#e5e5e5',
         borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+        alignItems: 'center',
     },
     input: {
+        width: '40%',
         height: 40,
         borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 5,
         marginBottom: 10,
-        paddingHorizontal: 10,
+        fontSize: 14,
     },
 });
 

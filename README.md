@@ -85,7 +85,23 @@ I would probably try to learn how to set up the unit tests earlier just so I did
 **Most valuable thing I learned:** 
 How to manage state and persistent storage in a React Native and Expo project, and how authentication can be handled locally. This was my first time working with React Native, so it was a big learning experience.
 
+### Armando Vega
 
+- [a link to Armando's pull requests](https://github.com/Wei-HaiMing/cst438proj1/pulls?q=is%3Apr+is%3Aclosed+author%3AWei-HaiMing)
+- [a link to Armando's issues](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Aissue%20state%3Aclosed%20author%3AWei-HaiMing)
+
+#### What was your role / which stories did you work on
+Armando's role was working on the storage and testing components of the project. Armando also worked on having the login component interact with the database as well as authentication into the app.
++ What was the biggest challenge?
+  + The biggest challenge was getting all of the dependencies and packages to work together.
++ Why was it a challenge?
+  + Every new feature that we implemented after we had figured out how to get one running required version changes. As we upgraded our dependency versions, some things would become deprecated, and we would have to try and find the workaround for that. In order to find a version that would make all of our features from SQLite to AsyncStorage to Jest Expo to work all together, we turned to AI agents to help us find out which version of each package would be optimal to allow for all these features to work together.
++ Favorite / most interesting part of this project
+  + My favorite part of the project was learning how the TypeScript and React-Native components work together. 
++ If you could do it over, what would you change?
+  + I would start with setting up unit testing first above all else.
++ What is the most valuable thing you learned?
+  + I learned how a React-Native project structure is supposed to look like with all the different storage and testing features that we implemented.
 
 ---
 

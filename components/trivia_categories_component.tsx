@@ -2,10 +2,10 @@
  * Trivia Categories Screen Component
  * 
  * This screen allows users to choose what category they want to choose for the trivia game.
- * The categories are generated via the OpenAI API, which makes categories not static.
+ * The categories are generated dynamically, which makes categories not static.
  * 
  * Features:
- * - AI-powered category generation via ChatGPT API
+ * - Dynamic category generation
  * - Animated fade-in effect for category display
  * - Grid layout with 2 categories per row
  * - Loading state management
@@ -43,11 +43,11 @@ const TriviaCategoriesScreen = ({ onCategorySelect }: TriviaCategoriesProps) => 
     const [fadeAnim] = useState(new Animated.Value(0));
 
     /**
-     * Handles the generation of trivia categories from ChatGPT
+     * Handles the generation of trivia categories
      * 
      * This async function:
      * 1. Sets loading state to true
-     * 2. Sends a structured prompt to ChatGPT API
+     * 2. Sends a structured prompt to the API
      * 3. Parses the response into category objects
      * 4. Updates state with new categories
      * 5. Triggers fade-in animation
@@ -114,36 +114,48 @@ const TriviaCategoriesScreen = ({ onCategorySelect }: TriviaCategoriesProps) => 
  * StyleSheet for TriviaCategoriesScreen
  * 
  * Defines the visual styling for all components in the screen:
- * - Container: Pink background (#f5a7a7ff) with centered content
- * - Cards: Orange/yellow (#f7c873) rounded rectangles for categories
+ * - Container: Consistent pastel background with centered content
+ * - Cards: Consistent tile color as other screens
  * - Row layout: Flexbox for 2-column grid arrangement
  * - Typography: Bold, dark text for readability
  * - Spacing: Consistent margins and padding throughout
  */
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fdf6f0', // soft pastel background (matches other screens)
+        paddingHorizontal: 16,
+        paddingTop: 20,
+    },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 8,
+        marginBottom: 16,
     },
     card: {
-        //flex: 1,
-        backgroundColor: '#f7c873',
-        padding: 16,
-        marginHorizontal: 8,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    text: {
-        fontWeight: 'bold',
-        color: '#333',
-        alignContent: 'center',
-    },
-    container: {
         flex: 1,
-        backgroundColor: '#f5a7a7ff',
+        backgroundColor: '#fff7e0', // same tile color as other screens
+        marginHorizontal: 6,
+        borderRadius: 12,
+        padding: 16,
+        minHeight: 140,
         alignItems: 'center',
         justifyContent: 'center',
+
+        // shadow for iOS
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+
+        // elevation for Android
+        elevation: 3,
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#333',
+        textAlign: 'center',
     },
     content: {
         flex: 1,

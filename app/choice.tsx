@@ -1,15 +1,15 @@
-import { useLocalSearchParams, useRouter} from "expo-router";
-import React, { useEffect, useState, useRef } from "react";
-import { 
-  ActivityIndicator, 
-  Alert, 
-  SafeAreaView, 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  View, 
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Animated,
   Modal,
-  Animated 
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { askChatGPT } from '../lib/chatgpt';
 
@@ -23,13 +23,13 @@ export default function TriviaScreen() {
   // Score counter (just keeps going up as they get answers right)
   const [score, setScore] = useState(0);
 
-  // Loading state while we wait for ChatGPT to give us questions
+  // Loading state while we wait for questions
   const [loading, setLoading] = useState<boolean>(true);
 
   // Category and description passed in from the Categories screen
   const { category, description } = useLocalSearchParams();
 
-  // Stores the full set of parsed questions coming from ChatGPT
+  // Stores the full set of parsed questions
   const [parsedQuestions, setParsedQuestions] = useState<
     { question: String; answers: string[]; correctIndex: number }[]
   >([]);
@@ -43,12 +43,12 @@ export default function TriviaScreen() {
   // Starts at 0 (invisible) → animates to 1 (fully visible)
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // ------------------ Fetching questions from ChatGPT ------------------
+  // ------------------ Fetching questions ------------------
   useEffect(() => {
     const fetchQuestion = async () => {
       setLoading(true);
 
-      // This prompt asks ChatGPT for 8 questions in JSON format only
+      // This prompt asks for 8 questions in JSON format only
       const questionAndAnswerPrompt = `Generate 8 fun trivia questions with 4 multiple choice answers each for the following category.
 
 Category: ${category}
@@ -62,7 +62,7 @@ IMPORTANT: Respond with ONLY a valid JSON array. Each question should be an obje
       try {
         const response = await askChatGPT(questionAndAnswerPrompt);
 
-        // Sometimes ChatGPT wraps JSON in extra text → try to clean it
+        // Sometimes the response wraps JSON in extra text → try to clean it
         const jsonMatch = response.match(/\[[\s\S]*\]/);
         const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(response);
 
@@ -134,7 +134,7 @@ IMPORTANT: Respond with ONLY a valid JSON array. Each question should be an obje
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
-        // Loading spinner while we wait for ChatGPT
+        // Loading spinner while we wait for questions
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#888" />
           <Text>Loading...</Text>
@@ -184,18 +184,36 @@ IMPORTANT: Respond with ONLY a valid JSON array. Each question should be an obje
       <Modal
         visible={modalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text>Your Score:</Text>
-            <Text>{score}</Text>
-            <TouchableOpacity onPress={() => { setModalVisible(false); router.push('/trivia_categories'); }}>
-              <Text>Play Again</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { setModalVisible(false); router.push('/'); }}>
-              <Text>Home</Text>
-            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Quiz Complete!</Text>
+            <View style={styles.scoreContainer}>
+              <Text style={styles.scoreLabel}>Your Score:</Text>
+              <Text style={styles.scoreValue}>{score} / {parsedQuestions.length}</Text>
+              <Text style={styles.scorePercentage}>
+                {Math.round((score / parsedQuestions.length) * 100)}%
+              </Text>
+            </View>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={styles.playAgainButton}
+                onPress={() => { setModalVisible(false); router.push('/trivia_categories'); }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.playAgainButtonText}>Play Again</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.homeButton}
+                onPress={() => { setModalVisible(false); router.push('/'); }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.homeButtonText}>Home</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -266,15 +284,95 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "center",
     alignItems: "center",
+    padding: 20,
   },
   modalContent: {
-    width: 250,
+    width: "90%",
+    maxWidth: 320,
+    padding: 30,
+    backgroundColor: "#fdf6f0",
+    borderRadius: 20,
+    alignItems: "center",
+    
+    // Enhanced shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  scoreContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+    backgroundColor: "#fff7e0",
     padding: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    elevation: 4,
+    borderRadius: 15,
+    width: "100%",
+  },
+  scoreLabel: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 8,
+  },
+  scoreValue: {
+    fontSize: 32,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 8,
+  },
+  scorePercentage: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#66a8ff",
+  },
+  modalButtons: {
+    width: "100%",
+    gap: 12,
+  },
+  playAgainButton: {
+    backgroundColor: "#66a8ff",
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+    alignItems: "center",
+    
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  playAgainButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  homeButton: {
+    backgroundColor: "#f7c873",
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+    alignItems: "center",
+    
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  homeButtonText: {
+    color: "#333",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

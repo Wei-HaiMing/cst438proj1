@@ -74,10 +74,10 @@ Right now, we have 36 issues that have been completed.
 
 - Micah's pull requests are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Apr%20state%3Aclosed%20author%3AMicahHeneveld)
 
-- Micah's issues are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Aissue%20state%3Aopen%20author%3AMicahHeneveld)
+- Micah's issues are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Aissue%20state%3Aclosed%20author%3AMicahHeneveld)
 
 - **Role/Stories Worked on:** 
-My first worked on setting up the landing page and getting the OpenAI API implemented into the project.  I then worked with Yegor to put together the gameplay element of the project.  Lastly, I implemented the project's multiplayer functionality.
+I first worked on setting up the landing page and getting the OpenAI API implemented into the project.  I then worked with Yegor to put together the gameplay element of the project.  Lastly, I implemented the project's multiplayer functionality.
 
 - **Biggest challenge:**
 Working effectively as a team.

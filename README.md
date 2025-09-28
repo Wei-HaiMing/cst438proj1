@@ -64,11 +64,37 @@ When the user creates an account and signs in, they will be prompted to choose a
 They'll be given 8 questions to answer. Once they answer, they can either play again, logout, or return to the homea page. 
 
 ## Introduction
-Our team communicated through a Slack group chat.
+Our team communicated through a Slack group chat, along with a sms group chat.
 We initially designed 16 issues. 
-Right now, we have 27 issues that have been completed. 
+Right now, we have 36 issues that have been completed. 
 
 ## Team Retrospective
+
+### Micah Heneveld
+
+- Micah's pull requests are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Apr%20state%3Aclosed%20author%3AMicahHeneveld)
+
+- Micah's issues are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Aissue%20state%3Aopen%20author%3AMicahHeneveld)
+
+- **Role/Stories Worked on:** 
+My first worked on setting up the landing page and getting the OpenAI API implemented into the project.  I then worked with Yegor to put together the gameplay element of the project.  Lastly, I implemented the project's multiplayer functionality.
+
+- **Biggest challenge:**
+Working effectively as a team.
+
+- **Why it was a challenge:**
+I had a fantastic team, and we all communicated well.  But collaborating on a four man team was still the most challenging part for me.  I am used to working on a one or two man team, so working on a four man team required me to change up my regular work flow.
+
+- **Favorite / most interesting part:** 
+Haha playing trivia against myself!  And setting up the multiplayer.  I have never done anything like multiplayer before, so I followed an online tutorial on how to implement Supabase's real time subscription functionality.  The tutorial couldn't be applied exactly to the project, so it required alot of thinking to figure out how data was going to be shared between the two players.
+
+- **If I could do it over:** 
+I am not sure... I think I did the best I could so I wouldn't change anything!
+
+- **Most valuable thing I learned:** 
+The experience I had working on a team, and how to work with Supabase's real time subscription.
+
+
 ### Krishneet Raj
 - Krishneet's pull requests are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Apr%20state%3Aclosed%20author%3AkrishneetRAJ)
 

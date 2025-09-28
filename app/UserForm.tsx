@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
-import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Button, StyleSheet, TextInput, TouchableOpacity, View, Text } from 'react-native';
 import { useAuth } from '../lib/hooks';
 
 const UserForm = ({ mode = 'signup' }) => {
@@ -99,21 +99,23 @@ const UserForm = ({ mode = 'signup' }) => {
                     onChangeText={(text) => setForm({...form, password: text})}
                     secureTextEntry={true} 
                 />
-                <Button title={(mode === "login") ? "Sign In" : "Sign Up"} onPress={handleSubmit} />
+                <TouchableOpacity style={styles.mainButton} onPress={handleSubmit} >
+                    <Text style={styles.mainButtonText}>{(mode === "login") ? "Sign In" : "Sign Up"}</Text>
+                </TouchableOpacity>
                 {mode === "login" && (
                     <>
                         <View style={{ height : 20}} />
-                        <Button title="Need an account? Sign Up!" 
-                                onPress ={ () => router.push('/signup') } 
-                        />
+                        <TouchableOpacity style={styles.secondButton} onPress ={ () => router.push('/signup') } >
+                            <Text style={styles.secondButtonText}>Need an account? Sign Up!</Text>
+                        </TouchableOpacity>
                     </>
                 )}
                 {mode === "signup" && (
                     <>
                         <View style={{ height : 20}} />
-                        <Button title="Already have an account? Sign In!" 
-                                onPress ={ () => router.push('/login') } 
-                        />
+                        <TouchableOpacity style={styles.secondButton} onPress ={ () => router.push('/login') } >
+                            <Text style={styles.secondButtonText}>Already have an account? Sign In!</Text>
+                        </TouchableOpacity>
                     </>
                 )}
             </View>
@@ -144,6 +146,44 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         fontSize: 14,
     },
+    mainButton: {
+        backgroundColor: "#66a8ff",
+        paddingVertical: 16,
+        paddingHorizontal: 40,
+        borderRadius: 12,
+        marginBottom: 20,
+        width: 250,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    secondButton: {
+        backgroundColor: "#fff7e0",
+        paddingVertical: 16,
+        paddingHorizontal: 40,
+        borderRadius: 12,
+        marginBottom: 20,
+        width: 285,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    secondButtonText: {
+        color: "#333",
+        fontWeight: "600",
+        fontSize: 16,
+    },
+  mainButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 16,
+  }
 });
 
 export default UserForm;

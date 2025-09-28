@@ -2,15 +2,15 @@
  * Trivia Categories Screen Component
  * 
  * This screen allows users to choose what category they want to choose for the trivia game.
- * The categories are generated via the OpenAI API, which makes categories not static.
+ * The categories are generated dynamically, which makes categories not static.
  * 
  * Features:
- * - AI-powered category generation via ChatGPT API
+ * - Dynamic category generation
  * - Animated fade-in effect for category display
  * - Grid layout with 2 categories per row
  * - Loading state management
  * - Responsive design with styled components
- * - Fun UI improvements (title, emoji icons, random category button)
+ * - Fun UI improvements (title, random category button)
  * 
  * @author CST-438 Project Team
  * @version 1.1
@@ -18,9 +18,9 @@
  */
 
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
+import { useEffect, useState } from 'react';
+import { Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { askChatGPT } from '../lib/chatgpt';
 import { useAuth } from '../lib/hooks';
 
@@ -64,15 +64,15 @@ export default function TriviaCategoriesScreen() {
         }
     };
 
-    // Prompt used to fetch categories from ChatGPT
-    // We tell GPT to give us 4 categories with names + descriptions
+    // Prompt used to fetch categories
+    // We request 4 categories with names + descriptions
     const chatPrompt = `Come up with 4 fun trivia categories.  Your response should strictly follow the following format:
                             (first category's name)-(discription)|(second category's name)-(discription)|ect.
                             Where '-' seperates a category's name and discription, and '|' seperates categories, and '()'
                             is just a place holder so DO NOT include parenthesis '()' in your response`;
 
     /**
-     * Fetches categories from ChatGPT and updates state
+     * Fetches categories and updates state
      * - Sets loading while fetching
      * - Splits response string into categories
      * - Animates fade-in effect once data is loaded
@@ -96,10 +96,9 @@ export default function TriviaCategoriesScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Hello {user?.name}</Text>
             {/* Page Header → helps avoid empty feel */}
-            <Text style={styles.title}>🎉 Choose a Trivia Category</Text>
-            <Text style={styles.subtitle}>Powered by AI • Pick something fun!</Text>
+            <Text style={styles.title}>Choose a Trivia Category</Text>
+            <Text style={styles.subtitle}>Pick something fun!</Text>
 
             {/* Show logout button if someone is logged in */}
             {isLoggedIn && (
@@ -117,7 +116,7 @@ export default function TriviaCategoriesScreen() {
                         style={styles.getButton}
                     >
                         <Text style={styles.getButtonText}>
-                            {loading ? ' AI is picking categories...' : 'Get Categories'}
+                            {loading ? 'Loading categories...' : 'Get Categories'}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -138,8 +137,7 @@ export default function TriviaCategoriesScreen() {
                                         })
                                     }
                                 >
-                                    {/* Placeholder emoji → could be dynamic later */}
-                                    <Text style={styles.cardEmoji}></Text>
+
                                     <Text style={styles.cardTitle}>{cat.name}</Text>
                                     <Text style={styles.cardDescription}>{cat.description}</Text>
                                 </TouchableOpacity>
@@ -161,7 +159,7 @@ export default function TriviaCategoriesScreen() {
                         });
                     }}
                 >
-                    <Text style={styles.randomText}> Random Category</Text>
+                    <Text style={styles.randomText}>Random Category</Text>
                 </TouchableOpacity>
             )}
         </SafeAreaView>
@@ -242,10 +240,7 @@ const styles = StyleSheet.create({
     // elevation for Android
     elevation: 3,
   },
-  cardEmoji: {
-    fontSize: 28,
-    marginBottom: 6,
-  },
+
   cardTitle: {
     fontSize: 16,
     fontWeight: '700',

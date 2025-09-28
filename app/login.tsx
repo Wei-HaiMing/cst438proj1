@@ -16,8 +16,8 @@ export default function LoginScreen() {
 
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Login</Text>
+    <View style={{ padding: 20, backgroundColor: '#fff7e0' }}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>Login</Text>
       <View style={{ marginVertical: 8 }} />
 
       <UserForm mode="login" />

@@ -108,6 +108,14 @@ const UserForm = ({ mode = 'signup' }) => {
                         />
                     </>
                 )}
+                {mode === "signup" && (
+                    <>
+                        <View style={{ height : 20}} />
+                        <Button title="Already have an account? Sign In!" 
+                                onPress ={ () => router.push('/login') } 
+                        />
+                    </>
+                )}
             </View>
         </>
     );
@@ -132,6 +140,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         marginBottom: 10,
+        marginTop: 10,
+        paddingHorizontal: 10,
         fontSize: 14,
     },
 });

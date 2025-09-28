@@ -95,6 +95,31 @@ I am not sure... I think I did the best I could so I wouldn't change anything!
 The experience I had working on a team, and how to work with Supabase's real time subscription.
 
 
+### Yegor Donaldson
+
+- Yegor’s pull requests are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Apr%20state%3Aclosed%20author%3Adonaldson10)
+
+- Yegor’s issues are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Aissue%20state%3Aclosed%20author%3Adonaldson10)
+
+- **Role/Stories Worked on:** 
+I worked on the gameplay portion of the project as well as setting up the styling for the categories and game pages. I also implemented the random category button and wrote the category descriptions.
+
+- **Biggest challenge:**
+Balancing styling and functionality while making sure the gameplay felt smooth.
+
+- **Why it was a challenge:**
+It was easy to get caught up in the visual design, but at the same time the gameplay logic needed to remain a priority. Making sure both elements worked together without breaking the flow of the game took the most time and careful testing.
+
+- **Favorite / most interesting part:** 
+Adding the random category button and making the categories feel unique with their descriptions. It gave the project more personality and replayability.
+
+- **If I could do it over:** 
+I would spend a bit more time experimenting with different UI layouts to polish the styling further, but overall I think what I did works well.
+
+- **Most valuable thing I learned:** 
+How to tie together gameplay mechanics with user interface design so that everything feels consistent. It also taught me how much little details like category descriptions can enhance the overall experience.
+
+
 ### Krishneet Raj
 - Krishneet's pull requests are [here](https://github.com/Wei-HaiMing/cst438proj1/issues?q=is%3Apr%20state%3Aclosed%20author%3AkrishneetRAJ)
 

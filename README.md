@@ -101,7 +101,9 @@ To learn more about developing your project with Expo, look at the following res
 
 Our project was creating a trivia game that makes use of the OpenAI API. 
 When the user creates an account and signs in, they will be prompted to choose a category that has been made from the OpenAI API.
-They'll be given 8 questions to answer. Once they answer, they can either play again, logout, or return to the homea page. 
+They'll be given 8 questions to answer. Once they answer, they can either play again, logout, or return to the home page. 
+The user interface is designed to be simple and intuitive, with clear prompts and buttons for navigation. 
+The app includes account management features such as signup, login, and persistent local storage, ensuring user progress is saved.
 
 ## Introduction
 Our team communicated through a Slack group chat, along with a sms group chat.
